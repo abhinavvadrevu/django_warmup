@@ -1,0 +1,64 @@
+"""
+Unit tests for the server
+"""
+
+def testMe():
+
+    return {'errcode':1234}
+
+import unittest
+import sys
+
+
+SUCCESS               =   1  # : a success
+ERR_BAD_CREDENTIALS   =  -1  # : (for login only) cannot find the user/password pair in the database
+ERR_USER_EXISTS       =  -2  # : (for add only) trying to add a user that already exists
+ERR_BAD_USERNAME      =  -3  # : (for add, or login) invalid user name (only empty string is invalid for now)
+ERR_BAD_PASSWORD      =  -4
+
+import os
+
+class TestUsers(unittest.TestCase):
+    """
+    Unittests for the Users model class (a sample, incomplete)
+    """
+    def setUp(self):
+        from login_system.models import UsersModel
+        k = UsersModel()
+        self.users = UsersModel ()
+        self.users.TESTAPI_resetFixture()
+
+        
+    def testAdd1(self):
+        """
+        Tests that adding a user works
+        """
+        self.assertEquals(SUCCESS, self.users.add("user1", "password")['errcode'])
+
+    def testAddExists(self):
+        """
+        Tests that adding a duplicate user name fails
+        """
+        self.assertEquals(SUCCESS, self.users.add("user1", "password"))
+        self.assertEquals(ERR_USER_EXISTS, self.users.add("user1", "password"))
+
+    def testAdd2(self):
+        """
+        Tests that adding two users works
+        """
+        self.assertEquals(SUCCESS, self.users.add("user1", "password"))
+        self.assertEquals(SUCCESS, self.users.add("user2", "password"))
+
+    def testAddEmptyUsername(self):
+        """
+        Tests that adding an user with empty username fails
+        """
+        self.assertEquals(ERR_BAD_USERNAME, self.users.add("", "password"))
+
+
+# If this file is invoked as a Python script, run the tests in this module
+if __name__ == "__main__":
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "login_form.settings")
+    # Add a verbose argument
+    sys.argv = [sys.argv[0]] + ["-v"] + sys.argv[1:]
+    unittest.main()

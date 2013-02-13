@@ -1,0 +1,44 @@
+<html>
+<title>Login Page</title>
+
+ADD A USER FORM:
+<br />
+<form name="input" action="users/add/" method="post">
+    {% csrf_token %}
+    Username: <input type="text" name="username">
+    <br />
+    Password: <input type="password" name="password">
+    <br />
+    <input type="submit" value="Add User">
+</form>
+<br />
+<br />
+<br />
+<br />
+<br />
+LOGIN FORM:
+<br />
+<form name="input" action="users/login/" method="post">
+    {% csrf_token %}
+    Username: <input type="text" name="username">
+    <br />
+    Password: <input type="password" name="password">
+    <br />
+    <input type="submit" value="Login">
+</form>
+<br />
+<br />
+<br />
+<br />
+
+
+You're at the index page motherfuckers.<br />
+Response: <br />
+{% if response %}
+    <div id=response style="color:red">
+    {{ response }}
+    </div>
+{% endif %}
+
+
+</html>

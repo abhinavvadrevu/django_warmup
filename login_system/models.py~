@@ -1,0 +1,87 @@
+from django.db import models
+from serverTest import testMe
+import StringIO
+import unittest
+
+
+# Create your models here.
+
+class UsersModel(models.Model):
+    user = models.CharField(max_length=128)
+    password = models.CharField(max_length=128)
+    count = models.IntegerField()
+    
+    def updatedata(self, username, password, count):
+        if not 1<len(username)<129:
+            #invalid username
+            errcode=-3
+            return errcode
+        elif len(password)>128:
+            #invalid password
+            errcode=-4
+            return errcode
+        self.user, self.password, self.count = username, password, count
+        errcode = 1
+        return errcode
+    
+    @staticmethod
+    def add(username, password):
+        try:
+            selected_choice = UsersModel.objects.get(user=username)
+        except UsersModel.DoesNotExist:
+            newuser = UsersModel()
+            errcode = newuser.updatedata(username, password, 0)
+            if errcode == 1:
+                newuser.save()
+            return errcode
+        else:
+            #user already exists
+            errcode=-2
+            return errcode
+    
+    @staticmethod
+    def login(username, password):
+        try:
+            user = UsersModel.objects.get(user=username)
+        except UsersModel.DoesNotExist:
+            #user does not exist
+            errcode = -1
+            return errcode
+        else:
+            #user exists
+            if str(password) == str(user.password):
+                errcode = user.incrementcount()
+                user.save()
+                return errcode
+            else:
+                #incorrect password
+                errcode = -1
+                return errcode
+    
+    def incrementcount(self):
+        self.count += 1
+        return self.count
+    
+    @staticmethod
+    def TESTAPI_resetFixture():
+        UsersModel.objects.all().delete()
+        return 1
+    
+    @staticmethod
+    def TESTAPI_unitTests():
+        response = testMe()
+        return response
+    
+    def __unicode__(self):
+        user = self.user
+        password = self.password
+        return '[Username: ' + user + '] [Password: ' + password + ']'
+    
+def testMe():
+    from login_system import tests
+    buffer = StringIO.StringIO()
+    suite = unittest.TestLoader().loadTestsFromTestCase(tests.SimpleTest)
+    result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
+    response = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
+    return response
+

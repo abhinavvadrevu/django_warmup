@@ -1,0 +1,14 @@
+import StringIO
+import unittest
+from login_system import tests
+
+
+def runUnitTests():
+    buffer = StringIO.StringIO()
+    suite = unittest.TestLoader().loadTestsFromTestCase(tests.SimpleTest)
+    result = unittest.TextTestRunner(stream = buffer, verbosity = 2).run(suite)
+    rv = {"totalTests": result.testsRun, "nrFailed": len(result.failures), "output": buffer.getvalue()}
+    return rv
+    
+
+print runUnitTests()
