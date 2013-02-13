@@ -46,7 +46,7 @@ class SimpleTest(TestCase):
         self.assertEqual(errcode, 3)
         errcode = UsersModel().login('abs1','p')
         self.assertEqual(errcode, -1)
-   def test_login3(self):
+    def test_login3(self):
         errcode = UsersModel().add('','a')
         self.assertEqual(errcode, -3)
         errcode = UsersModel().login('','a')
