@@ -57,10 +57,25 @@ class SimpleTest(TestCase):
         self.assertEqual(errcode, -1)
         errcode = UsersModel().login('abs2','')
         self.assertEqual(errcode, -1)
-    def test_login3(self):
+    def test_login4(self):
         errcode = UsersModel().add('abs','a')
         self.assertEqual(errcode, 1)
         errcode = UsersModel().add('SQLite.Query(db, "Delete from main.db where user = abs");','')
         self.assertEqual(errcode, 1)
         errcode = UsersModel().login('abs','a')
         self.assertEqual(errcode, 1)
+    def test_login5(self):
+        errcode = UsersModel().add('','')
+        self.assertEqual(errcode, -3)
+        errcode = UsersModel().login('','')
+        self.assertEqual(errcode, -1)
+    def test_login6(self):
+        errcode = UsersModel().add('a'*129,'')
+        self.assertEqual(errcode, -3)
+        errcode = UsersModel().login('a'*129,'')
+        self.assertEqual(errcode, -1)
+    def test_login7(self):
+        errcode = UsersModel().add('a'*128,'a'*129)
+        self.assertEqual(errcode, -4)
+        errcode = UsersModel().login('a'*128,'a'*129)
+        self.assertEqual(errcode, -1)
